@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EL CAMINO</title>
+
+<style>
+
+* {
+
+    box-sizing: border-box;
+
+}
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    background: linear-gradient(135deg, #090b12, #171c2b, #08090e);
+
+    color: #f5f0e6;
+
+    font-family: Georgia, serif;
+
+    text-align: center;
+
+}
+
+header {
+
+    padding: 35px 15px 15px;
+
+}
+
+h1 {
+
+    color: #d9b66d;
+
+    letter-spacing: 7px;
+
+    font-size: 38px;
+
+}
+
+.subtitulo {
+
+    color: #aaa;
+
+    font-style: italic;
+
+}
+
+.contenedor {
+
+    width: 90%;
+
+    max-width: 750px;
+
+    margin: 25px auto;
+
+    padding: 25px;
+
+    background: rgba(255,255,255,0.05);
+
+    border: 1px solid #806b43;
+
+    border-radius: 15px;
+
+}
+
+button {
+
+    background: #c5a15b;
+
+    color: #10121b;
+
+    border: none;
+
+    padding: 13px 22px;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    margin: 8px;
+
+}
+
+button:hover {
+
+    background: #f0d18d;
+
+}
+
+#fecha {
+
+    font-size: 20px;
+
+    color: #e6c783;
+
+    margin-bottom: 15px;
+
+}
+
+#contenido {
+
+    display: none;
+
+    margin-top: 25px;
+
+}
+
+#frase {
+
+    font-size: 25px;
+
+    line-height: 1.5;
+
+    margin: 20px 0;
+
+}
+
+#autor, #inspirado, #categoria {
+
+    color: #c5a15b;
+
+    margin: 10px;
+
+}
+
+#imagen {
+
+    width: 100%;
+
+    max-height: 420px;
+
+    object-fit: contain;
+
+    border-radius: 12px;
+
+    margin-top: 15px;
+
+}
+
+footer {
+
+    padding: 25px;
+
+    color: #777;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>EL CAMINO</h1>
+
+    <p class="subtitulo">Cada día es una nueva oportunidad.</p>
+
+</header>
+
+<main class="contenedor">
+
+    <div id="fecha"></div>
+
+    <p>Haz clic en la fecha para descubrir tu mensaje del día.</p>
+
+    <button onclick="mostrarFrase()">Descubrir mi frase</button>
+
+    <section id="contenido">
+
+        <p id="categoria"></p>
+
+        <p id="frase"></p>
+
+        <p id="autor"></p>
+
+        <p id="inspirado"></p>
+
+        <img id="imagen" src="" alt="Imagen inspiradora">
+
+    </section>
+
+    <br>
+
+    <button onclick="alternarMusica()" id="botonMusica">
+
+        ▶️ Activar música
+
+    </button>
+
+</main>
+
+<footer>
+
+    EL CAMINO · Sigue avanzando.
+
+</footer>
+
+<audio id="audio" loop>
+
+    <source src="musica.mp3" type="audio/mpeg">
+
+</audio>
+
+<script>
+
+const frases = [
+
+{
+
+    texto: "No importa cuántas veces caigas, sino cuántas veces decides levantarte.",
+
+    autor: "Mensaje original",
+
+    inspirado: "Inspiración: perseverancia",
+
+    categoria: "Personaje",
+
+    imagen: "imagenes/askelad1.jpg"
+
+},
+
+{
+
+    texto: "El mundo puede ser enorme, pero cada pequeño paso te acerca a tu destino.",
+
+    autor: "Mensaje original",
+
+    inspirado: "Inspiración: los viajes y la aventura",
+
+    categoria: "Paisaje",
+
+    imagen: "imagenes/Attack1.jpg"
+
+},
+
+{
+
+    texto: "La verdadera fuerza no consiste en no tener miedo, sino en avanzar a pesar de él.",
+
+    autor: "Mensaje original",
+
+    inspirado: "Inspiración: valentía",
+
+    categoria: "Personaje",
+
+    imagen: "imagenes/box1.jpg"
+
+},
+
+{
+
+    texto: "Incluso después de la tormenta, el horizonte sigue esperando.",
+
+    autor: "Mensaje original",
+
+    inspirado: "Inspiración: esperanza",
+
+    categoria: "Paisaje",
+
+    imagen: "imagenes/mar attack1.jpg"
+
+},
+
+{
+
+    texto: "No necesitas tener todo resuelto para dar el siguiente paso.",
+
+    autor: "Mensaje original",
+
+    inspirado: "Inspiración: crecimiento personal",
+
+    categoria: "Paisaje",
+
+    imagen: "imagenes/roca1.jpg"
+
+},
+
+{
+
+    texto: "Tu historia todavía está escribiéndose. No abandones el camino.",
+
+    autor: "Mensaje original",
+
+    inspirado: "Inspiración: nuevos comienzos",
+
+    categoria: "Anime",
+
+    imagen: "imagenes/vinland1.jpg"
+
+}
+
+];
+
+const hoy = new Date();
+
+document.getElementById("fecha").textContent =
+
+    hoy.toLocaleDateString("es-ES", {
+
+        weekday: "long",
+
+        day: "numeric",
+
+        month: "long",
+
+        year: "numeric"
+
+    });
+
+function mostrarFrase() {
+
+    const inicioDelAnio = new Date(hoy.getFullYear(), 0, 0);
+
+    const numeroDia = Math.floor((hoy - inicioDelAnio) / 86400000);
+
+    const indice = (numeroDia - 1) % frases.length;
+
+    const elegida = frases[indice];
+
+    document.getElementById("frase").textContent = elegida.texto;
+
+    document.getElementById("autor").textContent = elegida.autor;
+
+    document.getElementById("inspirado").textContent = elegida.inspirado;
+
+    document.getElementById("categoria").textContent = elegida.categoria;
+
+    document.getElementById("imagen").src = elegida.imagen;
+
+    document.getElementById("contenido").style.display = "block";
+
+}
+
+async function alternarMusica() {
+
+    const audio = document.getElementById("audio");
+
+    const boton = document.getElementById("botonMusica");
+
+    if (audio.paused) {
+
+        try {
+
+            await audio.play();
+
+            boton.textContent = "⏸️ Pausar música";
+
+        } catch (error) {
+
+            boton.textContent = "No se pudo reproducir la música";
+
+        }
+
+    } else {
+
+        audio.pause();
+
+        boton.textContent = "▶️ Activar música";
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>
